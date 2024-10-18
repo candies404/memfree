@@ -52,6 +52,13 @@ const features = [
         video: 'https://image.memfree.me/memfree-generate-ui-capture-image.mp4',
         reverse: false,
     },
+    {
+        header: 'Auto',
+        name: 'Smart Error Correction',
+        description: `While MemFree's advanced AI model and sophisticated code rules strive for perfection, occasional errors may occur. Our Smart Error Correction feature allows you to instantly fix any issues with just one click.`,
+        video: 'https://image.memfree.me/memfree-generate-ui-auto-fix-error.mp4',
+        reverse: true,
+    },
 ];
 
 const FeatureSections = () => {
@@ -67,8 +74,9 @@ const FeatureSections = () => {
                                 })}
                             >
                                 <h2 className="text-base font-semibold leading-7 text-primary">{feature.header}</h2>
-                                <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">{feature.name}</p>
-                                <p className="mt-6 text-lg leading-8 text-gray-600">{feature.description}</p>
+                                <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl">{feature.name}</p>
+                                <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">{feature.description}</p>
+
                                 <Link
                                     className={cn(
                                         buttonVariants({

@@ -46,3 +46,46 @@ export const evaluateComponentCode = (code: string): ExecuteCodeResult => {
 
     return exports as ExecuteCodeResult;
 };
+
+type ImportCheckResult = { isValid: boolean; message: string };
+
+const IMPORT_CONFIGS = [
+    { regex: /import\s*{([^}]+)}\s*from\s*['"]recharts['"]/, lib: Recharts, name: 'Recharts' },
+    { regex: /import\s*{([^}]+)}\s*from\s*['"]lucide-react['"]/, lib: LucideIcons, name: 'lucide-react', filter: (item: string) => !item.includes('Props') },
+    {
+        regex: /import\s*{([^}]+)}\s*from\s*['"]@\/components\/ui(?:\/[^'"]+)?['"]/g,
+        lib: ShadcnUI,
+        name: 'ShadcnUI',
+        filter: (item: string) => item !== '',
+        multipleMatches: true,
+    },
+];
+
+export function checkImports(codeString: string): ImportCheckResult {
+    for (const config of IMPORT_CONFIGS) {
+        const { regex, lib, name, filter, multipleMatches } = config;
+        const matches = multipleMatches ? Array.from(codeString.matchAll(regex)) : [codeString.match(regex)];
+
+        const allImports = new Set<string>();
+        matches.forEach((match) => {
+            if (match) {
+                match[1]
+                    .split(',')
+                    .map((item) => item.trim())
+                    .filter((item) => !filter || filter(item))
+                    .forEach((item) => allImports.add(item));
+            }
+        });
+
+        if (allImports.size > 0) {
+            const invalidImports = Array.from(allImports).filter((item) => !(item in lib));
+            if (invalidImports.length > 0) {
+                return {
+                    isValid: false,
+                    message: `The following ${name} components/icons are not valid: ${invalidImports.join(', ')}`,
+                };
+            }
+        }
+    }
+    return { isValid: true, message: '' };
+}

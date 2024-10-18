@@ -2,6 +2,7 @@ import UIWindowWapper from '@/app/[locale]/(search)/generate-ui/ui-window-wapper
 import FeatureSections from '@/components/layout/feature-sections';
 import { GenerateUIHeroLanding } from '@/components/layout/generate-ui-hero-landing';
 import { SimpleSiteFooter } from '@/components/layout/simple-site-footer';
+import DemoGallery from '@/components/search/ui-demo-gallaty';
 import { siteConfig } from '@/config';
 import { getCurrentUser } from '@/lib/session';
 import { generateId } from '@/lib/shared-utils';
@@ -14,16 +15,18 @@ export const metadata = {
     },
 };
 
-export default async function ProductHunt() {
+export default async function GenerateUI({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
     const id = generateId();
     const user = await getCurrentUser();
+    const showFeatureSections = !searchParams.id;
 
     return (
         <div className="group w-full flex flex-col flex-1 h-lvh mx-auto overflow-auto peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]">
             <div className="grow">
                 <GenerateUIHeroLanding />
                 <UIWindowWapper id={id} user={user} />
-                <FeatureSections />
+                {showFeatureSections && <DemoGallery />}
+                {showFeatureSections && <FeatureSections />}
             </div>
             <SimpleSiteFooter />
         </div>
